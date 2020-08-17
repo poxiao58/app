@@ -9,17 +9,31 @@
     <div class="content">
 
       <div class="show-info">
-        <h2>自动生成截图框 固定比例 w : h => 4 : 3</h2>
+        <h2>裁剪图片</h2>
         <div class="test">
-          <vueCropper ref="cropper2" :img="option.img " :outputSize="option.size" :outputType="option.outputType"
-                      :info="option.info" :canScale="option.canScale" :autoCrop="option.autoCrop"
-                      :autoCropWidth="option.autoCropWidth" :autoCropHeight="option.autoCropHeight" :fixed="option.fixed"
-                      :fixedNumber="option.fixedNumber" :enlarge="4"></vueCropper>
+          <vueCropper
+                      ref="cropper" :img="option.img "
+                      :outputSize="option.size"
+                      :outputType="option.outputType"
+                      :info="option.info"
+                      :canScale="option.canScale"
+                      :autoCrop="option.autoCrop"
+                      :autoCropWidth="option.autoCropWidth"
+                      :autoCropHeight="option.autoCropHeight"
+                      :fixed="option.fixed"
+                      :fixedNumber="option.fixedNumber"
+                      :fixedBox="option.fixedBox"
+                      :enlarge="4"></vueCropper>
         </div>
-        <label class="btn" for="upload2">上传</label>
-        <input type="file" id="upload2" style="position:absolute; clip:rect(0 0 0 0);"
-               accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event,2)">
-        <button @click="finish2()" class="btn">裁剪</button>
+<!--        <label class="btn" for="upload2">上传</label>-->
+<!--        <input type="file" id="upload2" style="position:absolute; clip:rect(0 0 0 0);"-->
+<!--               accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event,2)">-->
+        <button @click="trunClk(true)" class="btn">左旋转</button>
+        <button @click="trunClk(false)" class="btn">右旋转</button>
+        <button @click="typeClk(true)" class="btn">横版</button>
+        <button @click="typeClk(false)" class="btn">竖版</button>
+        <button  class="btn" @click="finish">上传图片</button>
+<!--        <button @click="finish2()" class="btn">裁剪</button>-->
       </div>
     </div>
 
@@ -28,7 +42,7 @@
 
 <script>
   import { VueCropper } from 'vue-cropper'
-  // import * as OSS from 'ali-oss';
+  import axios from 'axios'
   export default {
     name:'uploadImgs',
     components: {
@@ -52,8 +66,9 @@
           info: true,
           size: 1,
           outputType: 'png',
-          canScale: true,
+          canScale: false,
           autoCrop: true,
+          fixedBox:true,
           // 只有自动截图开启 宽度高度才生效
           autoCropWidth: 300,
           autoCropHeight: 250,
@@ -66,35 +81,82 @@
       }
     },
     methods: {
+      //旋转
+      trunClk(type){
+        if (type){
+          this.$refs.cropper.rotateLeft();
+        }else{
+          this.$refs.cropper.rotateRight();
+        }
+      },
+      //类型切换
+      typeClk(type){
+        if(type){
+          this.option.autoCropWidth=300;
+          this.option.autoCropHeight=250;
+        }else {
+          this.option.autoCropWidth=250;
+          this.option.autoCropHeight=300;
+        }
+      },
       //点击裁剪，这一步是可以拿到处理后的地址
-      finish2() {
-        this.$refs.cropper2.getCropData((data) => {
-          this.modelSrc = data
-          this.model = false;
-          //裁剪后的图片显示
-          this.option.img = this.modelSrc;
+      finish() {
+        var that=this;
+        this.$refs.cropper.getCropData((data) => {
+          let param = new FormData();
+          param.append('file', this.toBlob(data), 'image.png');
+          param.append("pictureType","2");
+          param.append("machineNo","BMP-111111111111111");
+          let config = {
+            headers:{'Content-Type':'multipart/form-data'}
+          };  //添加请求头
+          axios.post('http://localhost:9002/yzd/file/imageFileUpload',param,config)
+            .then(response=>{
+              console.log(response);
+            })
+          // this.$http.post('/file/imageFileUpload', {file:param}, function (res) {
+          //   if (res.success) {
+          //     that.$message({
+          //       message: "上传成功",
+          //       type: 'success'
+          //     })
+          //   }
+          // })
+          // this.$http.post('http://localhost:9002/yzd/file/imageFileUpload', param).then(res => {
+          //   console.log(res)
+          //   if(res.status == 0) {
+          //     let data = {
+          //       avatar:res.data.url
+          //     }
+          //   } else {
+          //   }
+          // }).catch(err => {})
+          // this.modelSrc = data
+          // this.model = false;
+          // //裁剪后的图片显示
+          // this.option.img = this.modelSrc;
           // this.toBlob(data)
           // console.log(data)
           // console.log(this.toBlob(data))
 
-          //阿里云处理图片，项目的接口，这里可以不用，上面的地址打印即为base64的地址
-          this.$api.admin.url(data => {
-            new OSS.Wrapper({
-              region: "oss-cn-hangzhou",
-              accessKeyId: data.accessKeyId,
-              accessKeySecret: data.accessKeySecret,
-              stsToken: data.securityToken,
-              // bucket: 'mybg'c
-              bucket: 'zhiyuan-hz'
-            })
-              .put(data.key, this.toBlob(this.option.img))
-              .then(data => {
-                console.log(data.url)
-              })
-              .catch(function (err) {
-                console.error("error: %j", err);
-              });
-          });
+          // //阿里云处理图片，项目的接口，这里可以不用，上面的地址打印即为base64的地址
+          // this.$api.admin.url(data => {
+          //   new OSS.Wrapper({
+          //     region: "oss-cn-hangzhou",
+          //     accessKeyId: data.accessKeyId,
+          //     accessKeySecret: data.accessKeySecret,
+          //     stsToken: data.securityToken,
+          //     // bucket: 'mybg'c
+          //     bucket: 'zhiyuan-hz'
+          //   })
+          //     .put(data.key, this.toBlob(this.option.img))
+          //     .then(data => {
+          //       console.log(data.url)
+          //     })
+          //     .catch(function (err) {
+          //       console.error("error: %j", err);
+          //     });
+          // });
         })
 
       },
@@ -213,9 +275,6 @@
     line-height: 50px;
   }
 
-  /*.title, .title:hover, .title-focus, .title:visited {
-        color: black;
-    }*/
 
   .title {
     display: block;

@@ -21,7 +21,8 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '192.168.1.7', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
+    // host: '192.168.1.7', // can be overwritten by process.env.HOST
     port: 8008,
     autoOpenBrowser: false,
     errorOverlay: true,
@@ -58,12 +59,12 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '/Users/poxiao/ideaworkspace/newyzd/web/src/main/resources/static/index.html'),
-    // index: path.resolve(__dirname, '../dist/index.html'),
+    // index: path.resolve(__dirname, '/Users/poxiao/dream/vue/dist/index.html'),
+    index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '/Users/poxiao/ideaworkspace/newyzd/web/src/main/resources/static'),
-    // assetsRoot: path.resolve(__dirname, '../dist'),
+    // assetsRoot: path.resolve(__dirname, '/Users/poxiao/dream/vue/dist/'),
+    assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
 
     /**

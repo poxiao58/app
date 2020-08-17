@@ -147,8 +147,7 @@
 </script>
 <style lang="css">
   .cropper-content{
-    /*position: fixed;*/
-    z-index: 199;5
+    z-index: 199;
     width: 100%;
     height: 50%;
   }

@@ -22,6 +22,9 @@ Vue.config.productionTip = false
 Vue.use(Mui);
 
 import router from './router'
+
+import request from './util/request'
+Vue.prototype.$http = request
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

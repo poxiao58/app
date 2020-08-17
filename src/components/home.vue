@@ -11,7 +11,7 @@
       </mu-carousel>
       <img width="100%" src="../assets/images/home_description.png">
       <mu-card-actions style="background: black">
-        <label class="btn" for="upload2" style="color: white;font-weight: bold;">进入相册选择图片</label>
+        <label class="btn" for="upload2" style="color: white;font-weight: bold;margin:0;border:0;background: black">进入相册选择图片</label>
         <input type="file" id="upload2" style="position:absolute; clip:rect(0 0 0 0);"
                accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event,1)">
 <!--        <mu-button flat color="primary" @click="uploadImg($event,2)" style="color: white;font-weight: bold;">进入相册选择图片</mu-button>-->
