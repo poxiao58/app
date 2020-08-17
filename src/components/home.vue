@@ -39,7 +39,12 @@
         home_2: '../assets/images/home_2.jpg',
         imageUrl: '11',
         picData:[],
+        machineNo:'',
       }
+    },
+    created() {
+      this.machineNo=this.$route.query.machineNo;
+      console.log("获取携带参数："+this.machineNo);
     },
     methods: {
       uploadImg(e, num) {
@@ -77,7 +82,7 @@
         console.log("上传成功！")
         this.imageUrl = URL.createObjectURL(file.raw);
         // this.$router.replace({ path: '/uploadImg' })
-        this.$router.push({name:'uploadImgs',query: {imageUrl: this.imageUrl}})
+        this.$router.push({name:'uploadImgs',query: {imageUrl: this.imageUrl,machineNo:this.machineNo}})
       },
       //上传图片
       uploadFile() {

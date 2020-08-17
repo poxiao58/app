@@ -50,10 +50,12 @@
     },
     mounted(){
       this.option.img = this.$route.query.imageUrl
+      this.machineNo = this.$route.query.machineNo
     },
     data() {
       return {
         model: false,
+        machineNo:'',
         modelSrc: '',
         crap: false,
         previews: {},
@@ -106,7 +108,7 @@
           let param = new FormData();
           param.append('file', this.toBlob(data), 'image.png');
           param.append("pictureType","2");
-          param.append("machineNo","BMP-111111111111111");
+          param.append("machineNo",this.machineNo);
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
           };  //添加请求头
