@@ -1,19 +1,42 @@
 <template>
-<div class="homeDiv" >
-  <div class="imgDiv">
-  <img @click="uploadClk" class="btnImg" src="../assets/images/btn.jpg">
-  </div>
-  <input type="file" ref="upload" id="upload2" style="position:absolute; clip:rect(0 0 0 0);"
-         accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event,1)">
-<!--  <el-image z-index="111" :lazy="true" src="../assets/images/btn.jpg"></el-image>-->
-</div>
+  <mu-container style="background: black;" >
+    <mu-card style="width: 100%; max-width: 375px; margin: 0 0;">
+      <mu-carousel hide-controls>
+        <mu-carousel-item>
+          <img src="../assets/images/home_1.jpeg" HEIGHT="500">
+        </mu-carousel-item>
+        <mu-carousel-item>
+          <img src="../assets/images/home_2.jpeg" HEIGHT="500">
+        </mu-carousel-item>
+      </mu-carousel>
+      <img width="100%" src="../assets/images/home_description.png">
+      <mu-card-actions style="background: black">
+        <label class="btn" for="upload2" style="color: white;font-weight: bold;margin:0;border:0;background: black">进入相册选择图片</label>
+        <input type="file" id="upload2" style="position:absolute; clip:rect(0 0 0 0);"
+               accept="image/png, image/jpeg,image/jpg" @change="uploadImg($event,1)">
+<!--        <mu-button flat color="primary" @click="uploadImg($event,2)" style="color: white;font-weight: bold;">进入相册选择图片</mu-button>-->
+<!--                <el-upload-->
+<!--                  ref="upload"-->
+<!--                  class="upload-demo"-->
+<!--                  action="http://192.168.1.7:9002/yzd/file/imageFileUploadApp"-->
+<!--                  :limit="1"-->
+<!--                  :on-success="handleAvatarSuccess"-->
+<!--                  >-->
+<!--                  <el-button size="small" type="primary" @click="uploadFile" style="background: black;border: 0px;">进入相册选择图片</el-button>-->
+<!--                </el-upload>-->
+      </mu-card-actions>
+    </mu-card>
+  </mu-container>
 </template>
+
 
 <script>
   export default {
     name: "home",
     data() {
       return {
+        home_1: '../assets/images/home_1.jpeg',
+        home_2: '../assets/images/home_2.jpg',
         imageUrl: '11',
         picData:[],
         machineNo:'',
@@ -25,10 +48,6 @@
       console.log("获取携带参数："+this.machineNo);
     },
     methods: {
-      //点击上传
-      uploadClk(){
-        this.$refs.upload.click();
-      },
       uploadImg(e, num) {
         //上传图片
         this.imageUrl = ''
@@ -115,29 +134,9 @@
       }
     }
 
-  }
+    }
 </script>
 
 <style scoped>
-.homeDiv{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -10;
-  background-color: #fff;
-  background: url(../assets/images/bg.jpg) no-repeat;
-  background-size: cover;
-  -webkit-background-size: 100% 100%;
-  /*-o-background-size: 100% 100%;*/
-  background-position: center 0;
-}
-  .btnImg{
-  width: 100%;
-  }
-  .imgDiv{
-    position: fixed;
-    bottom: -5%;
-  }
+
 </style>

@@ -23,7 +23,7 @@
                       :fixed="option.fixed"
                       :fixedNumber="option.fixedNumber"
                       :fixedBox="option.fixedBox"
-                      :enlarge="4"></vueCropper>
+                      :enlarge="4.75"></vueCropper>
         </div>
 <!--        <label class="btn" for="upload2">上传</label>-->
 <!--        <input type="file" id="upload2" style="position:absolute; clip:rect(0 0 0 0);"-->
@@ -56,6 +56,7 @@
       return {
         model: false,
         machineNo:'',
+        pictureType:'2',
         modelSrc: '',
         crap: false,
         previews: {},
@@ -68,16 +69,16 @@
           info: true,
           size: 1,
           outputType: 'png',
-          canScale: false,
+          canScale: true,
           autoCrop: true,
           fixedBox:true,
           // 只有自动截图开启 宽度高度才生效
-          autoCropWidth: 300,
-          autoCropHeight: 250,
+          autoCropWidth: 240,
+          autoCropHeight: 320,
           fixed: true,
           // 真实的输出宽高
           infoTrue: true,
-          fixedNumber: [4, 3]
+          fixedNumber: [3, 4]
         },
         downImg: '#'
       }
@@ -94,11 +95,15 @@
       //类型切换
       typeClk(type){
         if(type){
-          this.option.autoCropWidth=300;
-          this.option.autoCropHeight=250;
+          this.option.autoCropWidth=320;
+          this.option.autoCropHeight=240;
+          this.option.fixedNumber=[4, 3];
+          this.pictureType='1';
         }else {
-          this.option.autoCropWidth=250;
-          this.option.autoCropHeight=300;
+          this.option.autoCropWidth=240;
+          this.option.autoCropHeight=320;
+          this.option.fixedNumber=[3, 4];
+          this.pictureType='2';
         }
       },
       //点击裁剪，这一步是可以拿到处理后的地址
@@ -107,14 +112,26 @@
         this.$refs.cropper.getCropData((data) => {
           let param = new FormData();
           param.append('file', this.toBlob(data), 'image.png');
-          param.append("pictureType","2");
+          param.append("pictureType",this.pictureType);
           param.append("machineNo",this.machineNo);
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
           };  //添加请求头
-          axios.post('http://localhost:9002/yzd/file/imageFileUpload',param,config)
+          axios.post('http://www.zzyzd.com/yzd/file/imageFileUpload',param,config)
             .then(response=>{
               console.log(response);
+               if(response.data.success) {
+                 that.$message({
+                   message: "上传成功",
+                   type: 'success'
+                 })
+                 this.$router.go(-1);
+               }else {
+                 that.$message({
+                   message: response.data.msg,
+                   type: 'error'
+                 })
+               }
             })
           // this.$http.post('/file/imageFileUpload', {file:param}, function (res) {
           //   if (res.success) {
@@ -195,7 +212,7 @@
       // base64转blob
       toBlob(ndata) {
         //ndata为base64格式地址
-        console.log(ndata)
+        // console.log(ndata)
         let arr = ndata.split(','),
           mime = arr[0].match(/:(.*?);/)[1],
           bstr = atob(arr[1]),
